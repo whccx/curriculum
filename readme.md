@@ -5,8 +5,10 @@
    Contact: whccx@qq.com    
    blog: https://www.cnblogs.com/whccx    
 
-`A highly customized private school curriculum schedule website does not have universality, just to learn Django.       
-The running environment of the website is as follows:`
+```python django
+A highly customized private school curriculum schedule website does not have universality, just to learn Django.       
+The running environment of the website is as follows:
+```
 
   * adium-theme-ubuntu==0.3.4
   * Django==1.8.7
