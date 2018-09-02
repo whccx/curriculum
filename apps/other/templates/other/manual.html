@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title> 手动排课 - Ace 后台管理系统</title>
+{% endblock %}
+
+{% load staticfiles %}
+
+{% block mystyles %}
+<link rel="stylesheet" href="{%static 'css/jquery-ui.min.css'%}" />
+
+<style>
+	.ccx-draggable { list-style-type: none; padding:0px; margin:0px;float: left;
+		width: 140px;border: 1px dotted #d0d0d0;}
+	.ccx-zd { margin: 0px; padding: 0px; width: 140px;height: 30px;border: 1px dotted #B8C0FF;
+		background: #E0E4FF;float: left;padding-top:5px;}
+	.ccx-zd:hover {cursor:default;background: #d0d0d0}
+	.ccx-zs:hover {cursor:default;}
+	.ccx-zz:hover {cursor:default;}
+	.ccx-sortable {  margin: 0px; padding: 0px; border: 1px dotted red;}
+	.ccx-zs {margin: 0px; padding: 0px; width: 140px;height: 30px;border: 1px dotted black;
+		text-align:center;word-break:break-all}	
+	.ccx-zz {margin: 0px; padding: 0px; width: 120px;height: 30px;border: 1px dotted black;
+		text-align:center;word-break:break-all;background: #ededed}			
+	.portlet-placeholder {
+		border: 1px dotted black;
+		margin: 0 0em 0em 0;
+		height: 30px;
+		width: 140px;
+	}
+</style>
+{% endblock %}
+
+
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+
+
+{% block content %}
+
+<div class="ccx-draggable">
+	<span class="ccx-zd">
+		<span id="subject-zd">空</span>
+		<span id="name-zd"></span>
+		<span id="num-zd"></span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">计算机基础</span>
+		<span id="name-zd">- 雄</span>
+		<span id="num-zd">999</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">CorelDrew</span>
+		<span id="name-zd">玉</span>
+		<span id="num-zd">105</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">电子商务基础</span>
+		<span id="name-zd">梁</span>
+		<span id="num-zd">205</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">DreamWeaver</span>
+		<span id="name-zd">- 卫</span>
+		<span id="num-zd">999</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">计算机基础</span>
+		<span id="name-zd">雄</span>
+		<span id="num-zd">999</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">CorelDrew</span>
+		<span id="name-zd">玉</span>
+		<span id="num-zd">105</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">电子商务基础</span>
+		<span id="name-zd">梁</span>
+		<span id="num-zd">205</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">DreamWeaver</span>
+		<span id="name-zd">卫</span>
+		<span id="num-zd">205</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">计算机基础</span>
+		<span id="name-zd">雄</span>
+		<span id="num-zd">999</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">CorelDrew</span>
+		<span id="name-zd">玉</span>
+		<span id="num-zd">105</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">电子商务基础</span>
+		<span id="name-zd">梁</span>
+		<span id="num-zd">205</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">DreamWeaver</span>
+		<span id="name-zd">卫</span>
+		<span id="num-zd">205</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">计算机基础</span>
+		<span id="name-zd">雄</span>
+		<span id="num-zd">999</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">CorelDrew</span>
+		<span id="name-zd">玉</span>
+		<span id="num-zd">105</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">电子商务基础</span>
+		<span id="name-zd">梁</span>
+		<span id="num-zd">205</span>
+	</span>
+	<span class="ccx-zd">
+		<span id="subject-zd">DreamWeaver</span>
+		<span id="name-zd">卫</span>
+		<span id="num-zd">205</span>
+	</span>
+</div>
+<div style='float: left;'> 　 </div>
+<div>
+<TABLE class="ccx-sortable">
+	<TBODY>
+		<TR>			
+			<TD class="ccx-zz" rowspan="7" style="width: 50px;padding-left:14px;">
+				<div style="width: 20px;font-size:9pt ">
+				<span id="pc-name" >计算机应用一班</span>
+				<span id="t-name">雄</span>
+				</div>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">2018年</TD>
+			<TD class="ccx-zz">第1节</TD>
+			<TD class="ccx-zz">第2节</TD>
+			<TD class="ccx-zz">第3节</TD>
+			<TD class="ccx-zz">第4节</TD>
+			<TD class="ccx-zz">第5节</TD>
+			<TD class="ccx-zz">第6节</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期一</TD>
+			<TD class="ccx-zs">11</TD>
+			<TD class="ccx-zs">12</TD>
+			<TD class="ccx-zs">13</TD>
+			<TD class="ccx-zs">14</TD>
+			<TD class="ccx-zs">15</TD>
+			<TD class="ccx-zs">16</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期二</TD>
+			<TD class="ccx-zs">21</TD>
+			<TD class="ccx-zs">22</TD>
+			<TD class="ccx-zs">23</TD>
+			<TD class="ccx-zs">24</TD>
+			<TD class="ccx-zs">25</TD>
+			<TD class="ccx-zs">26</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期三</TD>
+			<TD class="ccx-zs">31</TD>
+			<TD class="ccx-zs">32</TD>
+			<TD class="ccx-zs">33</TD>
+			<TD class="ccx-zs">34</TD>
+			<TD class="ccx-zs">35</TD>
+			<TD class="ccx-zs">36</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期四</TD>
+			<TD class="ccx-zs">41</TD>
+			<TD class="ccx-zs">42</TD>
+			<TD class="ccx-zs">43</TD>
+			<TD class="ccx-zs">44</TD>
+			<TD class="ccx-zs">45</TD>
+			<TD class="ccx-zs">46</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期五</TD>
+			<TD class="ccx-zs">51</TD>
+			<TD class="ccx-zs">52</TD>
+			<TD class="ccx-zs">53</TD>
+			<TD class="ccx-zs">54</TD>
+			<TD class="ccx-zs">55</TD>
+			<TD class="ccx-zs">56</TD>
+		</TR>
+	</TBODY>
+
+	<TBODY>
+		<TR>			
+			<TD class="ccx-zz" rowspan="7" style="width: 50px;padding-left:14px;">
+				<div style="width: 20px;font-size:9pt ">
+				<span id="pc-name" >计算机应用一班</span>
+				<span id="t-name">雄</span>
+				</div>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">2018年</TD>
+			<TD class="ccx-zz">第1节</TD>
+			<TD class="ccx-zz">第2节</TD>
+			<TD class="ccx-zz">第3节</TD>
+			<TD class="ccx-zz">第4节</TD>
+			<TD class="ccx-zz">第5节</TD>
+			<TD class="ccx-zz">第6节</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期一</TD>
+			<TD class="ccx-zs">11</TD>
+			<TD class="ccx-zs">12</TD>
+			<TD class="ccx-zs">13</TD>
+			<TD class="ccx-zs">14</TD>
+			<TD class="ccx-zs">15</TD>
+			<TD class="ccx-zs">16</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期二</TD>
+			<TD class="ccx-zs">21</TD>
+			<TD class="ccx-zs">22</TD>
+			<TD class="ccx-zs">23</TD>
+			<TD class="ccx-zs">24</TD>
+			<TD class="ccx-zs">25</TD>
+			<TD class="ccx-zs">26</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期三</TD>
+			<TD class="ccx-zs">31</TD>
+			<TD class="ccx-zs">32</TD>
+			<TD class="ccx-zs">33</TD>
+			<TD class="ccx-zs">34</TD>
+			<TD class="ccx-zs">35</TD>
+			<TD class="ccx-zs">36</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期四</TD>
+			<TD class="ccx-zs">41</TD>
+			<TD class="ccx-zs">42</TD>
+			<TD class="ccx-zs">43</TD>
+			<TD class="ccx-zs">44</TD>
+			<TD class="ccx-zs">45</TD>
+			<TD class="ccx-zs">46</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期五</TD>
+			<TD class="ccx-zs">51</TD>
+			<TD class="ccx-zs">52</TD>
+			<TD class="ccx-zs">53</TD>
+			<TD class="ccx-zs">54</TD>
+			<TD class="ccx-zs">55</TD>
+			<TD class="ccx-zs">56</TD>
+		</TR>
+	</TBODY>
+	<TBODY>
+		<TR>			
+			<TD class="ccx-zz" rowspan="7" style="width: 50px;padding-left:14px;">
+				<div style="width: 20px;font-size:9pt ">
+				<span id="pc-name" >计算机应用一班</span>
+				<span id="t-name">雄</span>
+				</div>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">2018年</TD>
+			<TD class="ccx-zz">第1节</TD>
+			<TD class="ccx-zz">第2节</TD>
+			<TD class="ccx-zz">第3节</TD>
+			<TD class="ccx-zz">第4节</TD>
+			<TD class="ccx-zz">第5节</TD>
+			<TD class="ccx-zz">第6节</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期一</TD>
+			<TD class="ccx-zs">11</TD>
+			<TD class="ccx-zs">12</TD>
+			<TD class="ccx-zs">13</TD>
+			<TD class="ccx-zs">14</TD>
+			<TD class="ccx-zs">15</TD>
+			<TD class="ccx-zs">16</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期二</TD>
+			<TD class="ccx-zs">21</TD>
+			<TD class="ccx-zs">22</TD>
+			<TD class="ccx-zs">23</TD>
+			<TD class="ccx-zs">24</TD>
+			<TD class="ccx-zs">25</TD>
+			<TD class="ccx-zs">26</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期三</TD>
+			<TD class="ccx-zs">31</TD>
+			<TD class="ccx-zs">32</TD>
+			<TD class="ccx-zs">33</TD>
+			<TD class="ccx-zs">34</TD>
+			<TD class="ccx-zs">35</TD>
+			<TD class="ccx-zs">36</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期四</TD>
+			<TD class="ccx-zs">41</TD>
+			<TD class="ccx-zs">42</TD>
+			<TD class="ccx-zs">43</TD>
+			<TD class="ccx-zs">44</TD>
+			<TD class="ccx-zs">45</TD>
+			<TD class="ccx-zs">46</TD>
+		</TR>
+		<TR>
+			<TD class="ccx-zz" style="width: 60px;">星期五</TD>
+			<TD class="ccx-zs">51</TD>
+			<TD class="ccx-zs">52</TD>
+			<TD class="ccx-zs">53</TD>
+			<TD class="ccx-zs">54</TD>
+			<TD class="ccx-zs">55</TD>
+			<TD class="ccx-zs">56</TD>
+		</TR>
+	</TBODY>
+</TABLE>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+	{% include 'scripts.html' %}	
+{% endblock%}
+
+{% block myscripts %}
+<script src="{%static 'js/jquery-1.11.3.min.js'%}"></script>
+<script src="{%static 'js/jquery-ui.custom.min.js'%}"></script>
+
+<script type="text/javascript">
+var tuotext
+$(function() {
+	//-----------------------双击删除-----------
+	
+ 	// $(".ccx-draggable").on("dblclick","div",function(){ 		
+		// $(this).remove();
+ 	// });
+
+	//-----------------------初始化draggable-----
+    $( ".ccx-zd" ).draggable({
+    	revert: false, 
+
+		helper: function() {
+            var li = $(this).clone();
+            li.css({width:'140px', height:'30px',});
+			return li;
+        },
+        start: function() {
+        	tuotext = $(this).text(); //拖动取文本
+        },
+        cursor: "default",
+        cursorAt: { top: -1, left:-1 },
+    }).disableSelection();
+
+    //---------------------鼠标移入替换文本---------
+    var mycss
+    $(document).ready(function(e) {
+		$(".ccx-sortable").find('.ccx-zs').on({
+			mouseup:function(e){ //鼠标弹起事件
+				if (tuotext!=null) {
+					//console.log(tuotext);
+					$(this).html(tuotext);
+					tuotext=null; //替换完清空拖动值					
+				};
+				$(this).css("background-color","#B3BBFF");
+				mycss=1;				
+			},
+			mouseover:function(e){
+				//$(".ccx-sortable").find('TD').on({background-color: red;});
+				$(this).css("background-color","#d0d0d0");
+				mycss=2;
+			},
+			mouseout:function(e){
+				if (mycss!=1){
+					$(this).css("background-color","#fff");
+				}else{
+					$(this).css("background-color","#B3BBFF");
+					mycss=2;
+				}
+			},
+		});
+	});
+    //------------------------------
+});
+
+
+</script>
+{% endblock%}

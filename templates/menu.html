@@ -1,0 +1,326 @@
+	{% load staticfiles %}
+
+	<ul class="nav nav-list">
+		<li class="">
+			<a href="{% url 'index' %}">
+				<i class="menu-icon fa fa-tachometer red"></i>
+				<span class="menu-text"> 数据浏览 </span>
+			</a>
+
+			<b class="arrow"></b>
+		</li>
+
+		<li class="" id="testc">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-list purple"></i>
+				<span class="menu-text"> 基础数据 </span>
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+
+			<b class="arrow"></b>
+
+			<ul class="submenu">
+				<li class="">
+					<a href="{% url 'mydata:mydata_dp' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						设置系部
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_pf' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						开设专业
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_sp' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						设置场室
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_grade' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						设置年级
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_myclass' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						设置班级
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_ps' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						公共课程
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_ms' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						专业课程
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_ptt' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						兼职教师
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_ftt' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						全职教师
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="{% url 'mydata:mydata_stt' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						代课教师
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+
+		<li class="">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-pencil-square-o blue"></i>
+				<span class="menu-text">关联和规则</span>
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+			<b class="arrow"></b>
+
+			<ul class="submenu">
+				<li class="">
+					<a href="{% url 'setrule:make_bmt'%}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						基础信息总表
+					</a>
+					<b class="arrow"></b>
+				</li>
+
+				<li class="">
+					<a href="{% url 'setrule:make_tsm'%}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						教师授课信息
+					</a>
+					<b class="arrow"></b>
+				</li>
+
+				<li class="">
+					<a href="{% url 'setrule:make_gtp'%}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						年级教学计划
+					</a>
+					<b class="arrow"></b>
+				</li>
+
+				<li class="">
+					<a href="{% url 'setrule:ins_rules' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						制定规则
+					</a>
+					<b class="arrow"></b>
+				</li>
+
+				<li class="">
+					<a href="{% url 'setrule:test_rules' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						测试规则
+					</a>
+					<b class="arrow"></b>
+				</li>
+				
+				<li class="">
+					<a href="{% url 'setrule:eva_report' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						综合评估
+					</a>
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+
+		<li class="">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-cog green"></i>
+				<span class="menu-text">开始排课</span>
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+			<b class="arrow"></b>
+
+			<ul class="submenu">
+				<li class="">
+					<a href="{% url 'reorder:start' %}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						排课步骤
+					</a>
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="#">
+						<i class="menu-icon fa fa-caret-right"></i>
+						排课结果
+					</a>
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="#">
+						<i class="menu-icon fa fa-caret-right"></i>
+						教师课程表
+					</a>
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="#">
+						<i class="menu-icon fa fa-caret-right"></i>
+						班级课程表
+					</a>
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="#">
+						<i class="menu-icon fa fa-caret-right"></i>
+						场所课程表
+					</a>
+					<b class="arrow"></b>
+				</li>
+				<li class="">
+					<a href="#">
+						<i class="menu-icon fa fa-caret-right"></i>
+						无课教师表
+					</a>
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+
+		<li class="">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-file-o"></i>
+
+				<span class="menu-text">
+					其他页面
+
+					<span class="badge badge-primary">5</span>
+				</span>
+
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+
+			<b class="arrow"></b>
+
+			<ul class="submenu">
+				<li class="">
+					<a href="{% url 'other:manual'%}">
+						<i class="menu-icon fa fa-caret-right"></i>
+						手动排课
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+	</ul><!-- /.nav-list -->
+
+	<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+		<i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+	</div>
+</div>
+
+<div class="main-content">
+	<div class="main-content-inner">
+		<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+			<ul class="breadcrumb">
+				<li>
+					<i class="ace-icon fa fa-home home-icon"></i>
+					<a href="{% url 'index' %}">首页</a>
+				</li>
+<!--
+				{% ifequal aopen 1 %}
+				<li class="active">数据浏览</li>
+				{% endifequal %}
+
+				{% ifequal aopen 2 %}
+				<li><a href="#">基础数据</a></li>
+					{% ifequal ative 21 %}
+						<li class="active">设置系部</li>						
+					{% endifequal %}
+					{% ifequal ative 22 %}
+						<li class="active">开设专业</li>						
+					{% endifequal %}
+					{% ifequal ative 23 %}
+						<li class="active">设置场室</li>
+					{% endifequal %}
+					{% ifequal ative 24 %}
+						<li class="active">设置年级</li>
+					{% endifequal %}
+					{% ifequal ative 25 %}
+						<li class="active">设置班级</li>
+					{% endifequal %}
+					{% ifequal ative 26 %}
+						<li class="active">公共课程</li>
+					{% endifequal %}
+					{% ifequal ative 27 %}
+						<li class="active">专业课程</li>
+					{% endifequal %}
+					{% ifequal ative 28 %}
+						<li class="active">兼职教师</li>
+					{% endifequal %}
+					{% ifequal ative 29 %}
+						<li class="active">全职教师</li>
+					{% endifequal %}
+					{% ifequal ative 30 %}
+						<li class="active">代课教师</li>
+					{% endifequal %}					
+				{% endifequal %}
+
+				{% ifequal aopen 3 %}
+				<li><a href="#">关联和规则</a></li>
+					{% ifequal ative 31 %}
+						<li class="active">基础信息总表</li>						
+					{% endifequal %}
+					{% ifequal ative 32 %}
+						<li class="active">教师授课信息</li>						
+					{% endifequal %}
+					{% ifequal ative 33 %}
+						<li class="active">年级教学计划</li>						
+					{% endifequal %}
+					{% ifequal ative 34 %}
+						<li class="active">制定规则</li>
+					{% endifequal %}
+					{% ifequal ative 35 %}
+						<li class="active">测试规则</li>
+					{% endifequal %}
+					{% ifequal ative 36 %}
+						<li class="active">综合评估</li>
+					{% endifequal %}
+					{% ifequal ative 37 %}
+						<li class="active">排课优先级</li>
+					{% endifequal %}
+				{% endifequal %}
+			</ul>
+-->
+
+			<!-- /.breadcrumb -->

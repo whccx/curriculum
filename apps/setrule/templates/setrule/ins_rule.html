@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- page title -->
+{% block title %}
+	<title> 制定规则 - Ace 后台管理系统</title>
+{% endblock %}
+
+<!-- page styles -->
+{% block mystyles %}
+{% endblock %}
+
+<!-- page menu -->
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+<!-- page body -->
+{% block content %}
+<div class="col-lg-6">
+		
+	<h4>学校基本规则</h4>
+	<hr />
+	<ul class="list-unstyled spaced">
+		<li>
+			<i class="ace-icon fa fa-bell-o bigger-110 purple"></i>
+			同一时间同一位教师不能出现在两个班或两个场所上课
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-bell-o bigger-110 purple"></i>
+			同一时间同一授课场所不能有两个不同班或两个不同教师
+		</li>	
+
+		<li>
+			<i class="ace-icon fa fa-bell-o bigger-110 purple"></i>
+			每周排课5天，周一至周五，每天上午4节，下午2节，均为2节连堂课
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-check bigger-110 green"></i>
+			根据班级人数和场所最大容纳人数排课，防止超人数
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-check bigger-110 green"></i>
+			每个教师，每个班级，每个场所，每周最多只有30节课
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-check bigger-110 green"></i>
+			按照本栏前三个基础表格数据排课,教学计划里规定每个年级课程节数
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-check bigger-110 green"></i>
+			教师数量不得少于：班数*2(含兼职)
+		</li>
+	</ul>
+	<br />
+	<!------------------------------------------------>
+	<h4>教师设定</h4>
+	<hr />
+	<ul class="list-unstyled spaced2">
+		<li>
+			<i class="ace-icon fa fa-times bigger-110 red"></i>
+			教师授课节数尽量平均(自定义值)，除非特殊要求；尽量不要有0节和满节
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-times bigger-110 red"></i>
+			自定义教师授课优先年级(主)
+		</li>
+
+		<li class="muted">
+			<i class="ace-icon fa fa-angle-right bigger-110"></i>
+			班主任的课不能少于4节，手动指定教师排课年级(不入库)
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-share green bigger-110"></i>
+			同一天同一门课,不得超过四节,不能连续理论课
+		</li>
+	</ul>
+	
+</div>
+
+<!--==============================================================-->
+
+<div class="col-lg-6">
+	
+	<h4>优先级说明</h4>
+	<hr />
+	<ul class="list-unstyled spaced">
+		<li>
+			<i class="ace-icon fa fa-circle bigger-110 red"></i>
+			第一优先级：兼职教师的必须上和不能上时间，连：上午或下午 （死规定，不能变)
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-circle bigger-110 red"></i>
+			第二优先级：默认周二下午：班会，周五下午安排班主任的课 (实在排不了可调整)
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-circle bigger-110 orange"></i>
+			第三优先级：兼职和全职教师的要求：节数范围
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-circle bigger-110 orange"></i>
+			第四优先级：先排专业主科，后排公共-杂科
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-circle bigger-110 purple"></i>
+			第五优先级：可排科目数量少的教师先排，特别是只会一门的教师
+		</li>
+
+	</ul>
+	<br />
+	<!------------------------------------------------>
+	<h4>其他设定</h4>
+	<hr />
+	<ul class="list-unstyled spaced2">
+		
+		<li>
+			<i class="ace-icon fa fa-share blue bigger-110"></i>
+			单科排课是整体时间按一个系部排，不能只按一个班先排，不同系部不一起排
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-share blue bigger-110"></i>
+			同时排人和科目，尝试同一个班不同时间位置
+		</li>
+
+		<li class="muted">
+			<i class="ace-icon fa fa-share blue bigger-110"></i>
+			排课过程重排条件:到某步如冲突，则该步所有可能重排，排完任一冲突。
+		</li>
+
+		<li>
+			<i class="ace-icon fa fa-share blue bigger-110"></i>
+			测试阶段，单步手动执行：可视化界面;剩余需要排的科目
+
+		</li>
+	</ul>	
+
+</div>
+{% endblock%}
+
+<!-- page js -->
+{% block scripts %}
+	{% include 'scripts.html' %}
+{% endblock%}
+
+<!-- page script -->
+{% block myscripts %}
+<script type="text/javascript" charset="gbk">
+</script>
+{% endblock%}

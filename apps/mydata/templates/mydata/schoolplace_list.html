@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title> 设置场室 - Ace 后台管理系统</title>
+{% endblock %}
+
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+
+{% block content %}						
+	<p><H5>你的学校一共有以下场室：</H5></p>
+	<table id="depart-table" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th class="center">序号</th>
+				<th class="center">场室名称</th>
+				<th class="center">楼层</th>
+				<th class="center">建筑名称</th>
+				<th class="center">房间号</th>
+				<th class="center">最多容纳(人)</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for spline in object_list %}
+			<tr>
+				<td class="center">{{ spline.id }}</td>
+				<td class="center">{{ spline.schoolplace_name }}</td>
+				<td class="center">{{ spline.building_floor }}</td>
+				<td class="center">{{ spline.building_name }}</td>
+				<td class="center">{{ spline.schoolplace_num }}</td>
+				<td class="center">{{ spline.max_seats }}</td>										
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
+
+
+{% block scripts %}
+	{% include 'scripts.html' %}
+{% endblock%}

@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- page title -->
+{% block title %}
+	<title> 年级授课计划 - Ace 后台管理系统</title>
+{% endblock %}
+
+<!-- page styles -->
+{% block mystyles %}
+	<link rel="stylesheet" href="{%static 'css/jquery-ui.min.css'%}" />
+	<!-- <link rel="stylesheet" href="{%static 'css/bootstrap-datepicker3.min.css'%}" /> -->
+	<link rel="stylesheet" href="{%static 'css/ui.jqgrid.min.css'%}" />
+{% endblock %}
+
+<!-- page menu -->
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+<!-- page body -->
+{% block content %}
+<!-- null <br> -->
+<div><span>　</span></div>
+<!---------------------- search form ---------------------->
+<form name="myform" action="{% url 'setrule:make_gtp'%}" method="POST">
+	<div id="mysearch"></div>
+	<div class="col-xs-12 col-sm-12 col-lg-12 col-xl-12">
+		<label for="select1">系部:
+		<select id="select1" name="select1">
+			<option value="" selected="selected">---</option>
+			{% for ldp in all_depart %}
+			<option value="{{ ldp }}">{{ ldp }}</option>		
+			{% endfor %}
+		</select>
+		</label>
+		<span>　</span>
+		<label for="select2">专业:
+		<select id="select2" name="select2">
+			<option value="" selected="selected">---</option>
+			{% for ldp in all_profess %}
+			<option value="{{ ldp }}">{{ ldp }}</option>		
+			{% endfor %}
+		</select>
+		</label>
+		<span>　</span>
+		<label for="select3">年级:
+		<select id="select3" name="select3">
+			<option value="" selected="selected">---</option>
+			{% for ldp in all_grade %}
+			<option value="{{ ldp }}">{{ ldp }}</option>		
+			{% endfor %}
+		</select>
+		</label>
+		<span>　</span>
+		<input type='hidden' name='oper' value='my_search' size="4">
+		<button type="submit">　查 找　</button>
+	</div>
+</form>
+
+
+
+<!----------------- grid ------------------------>
+<div class="col-xs-12 col-sm-12 col-lg-8 col-xl-7" >
+	<div style="border:2px solid #D0D0D0" class="col-">
+		<table id="grid-table"></table>
+		<div id="grid-pager"></div>
+	</div>
+	
+</div>
+
+{% endblock%}
+
+
+{% block scripts %}
+	{% include 'scripts.html' %}
+	<!-- page specific plugin scripts -->
+	<script src="{%static 'js/jquery.jqGrid.min.js'%}"></script>
+	<script src="{%static 'js/grid.locale-en.js'%}"></script>
+	<script src="{%static 'js/grid.addons.js'%}"></script>
+{% endblock%}
+
+{% block myscripts %}
+
+<script type="text/javascript" charset="gbk">
+
+var s1_val = "";
+var s2_val = "";
+var s3_val = "";
+
+s1_val="{{ select_depart }}";
+s2_val="{{ select_profess }}";
+s3_val="{{ select_grade }}";
+
+
+jQuery(function($) {
+	var men="";
+	var grid_selector = "#grid-table";
+	var pager_selector = "#grid-pager";
+	var parent_column = $(grid_selector).closest('[class*="col-"]');
+	
+	//打开的时候重新设置表格宽度
+	$(window).on(
+		'resize.jqGrid', 
+		function () {
+			$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
+    	},
+    	
+    );	
+	
+	jQuery(grid_selector).jqGrid({
+		
+		url:"{%static 'json/make_gtp.json'%}",
+		datatype: "json",
+		mtype:"POST",
+		height: 300,  //设置表格高度
+		colNames:['序号','课程类型','课程名字','理论节数','实训节数','优先级','年级','专业','系部'],
+		colModel:[
+			{name:'id',index:'id',sorttype:"int", align:"center",editable: true},
+			{name:'subject_type',index:'subject_type',editable:true,edittype:"select",
+				editoptions:{value:("专业课程:专业课程;公共课程:公共课程")}},			
+			{name:'subject_name',index:'subject_name',editable:true,edittype:"select",
+				editoptions:{value:(
+					"---:---{% for epf in edit_profess %};{{ epf }}:{{ epf }}{% endfor %}"
+					)}},
+			{name:'theory_classes',index:'theory_classes',editable:true,sorttype:"int",editoptions:{size:"4",maxlength:"8"}},
+			{name:'practice_classes',index:'practice_classes',editable:true,sorttype:"int",editoptions:{size:"4",maxlength:"8"}},
+			{name:'prior_order',index:'prior_order',editable:true,sorttype:"int",editoptions:{size:"4",maxlength:"8"}},			
+			{name:'grade',index:'grade',editable:true},
+			{name:'profess',index:'profess',editable:true},
+			{name:'depart',index:'depart',editable:true},
+		], 
+		
+
+		pager : pager_selector, //整个下面的按钮条	
+
+		viewrecords : true, //显示记录信息
+		recordtext: "显示:{0}-{1},总数:{2} ",
+
+		rowNum:10, //默认显示几行
+		rowList:[10,20,40], //下拉设置显示页数										
+		pgtext : "第{0}页,共{1}页",
+		pgfirst:"首页",
+		pgnext:"下一页",
+		pgprev:"上一页",
+		pglast:"尾页",			
+		pgrecs:"设置显示多少条记录",
+		altRows : true,//设置为交替颜色表格
+
+		sortname : 'id',
+		sortorder : "asc",
+		loadonce : true,
+
+    	footerrow : true,
+    	userDataOnFooter : true,
+
+		autowidth : true, //自适应宽度
+		loadtext : "数据加载中...",
+		
+		///////数据加载完成后，更新表格图标的时间/////////
+		loadComplete : function() {			
+			var table = this;
+			setTimeout(function(){
+				$("table").css("border","#d0d0d0");
+				// styleCheckbox(table);
+				// updateActionIcons(table);
+				 updatePagerIcons(table);
+				 enableTooltips(table);
+			}, 0);
+			
+			if (s1_val!=""){
+				document.getElementById('select1').value=s1_val;
+				document.getElementById('select2').value=s2_val;
+				document.getElementById('select3').value=s3_val;
+			};
+		},		
+
+		editurl: "{% url 'setrule:make_gtp'%}", //编辑提交的url
+		//caption: "", //设置表头显示内容
+
+		jsonReader : {   
+			root: "rows",
+		    page: "page",
+		    total: "total",
+		    records: "records",
+		    repeatitems: true,
+		    cell: "cell", 
+		    id: "id",
+        },
+
+
+	});
+
+	//navButtons
+	jQuery(grid_selector).jqGrid('navGrid',pager_selector,
+		{ 	//navbar options
+			edit: true,
+			editicon : 'ace-icon fa fa-pencil blue',
+			edittext: "修改",
+			edittitle: "修改你选择的记录", 
+			
+			add: true,
+			addicon : 'ace-icon fa fa-plus-circle purple',
+			addtext:"增加",  
+			addtitle: "增加一行记录",
+			
+			del: true,
+			delicon : 'ace-icon fa fa-trash-o red',
+			deltext: "删除",
+			deltitle: "删除你选择的记录",
+
+			//search: false,
+			refresh: false,
+			view: false,
+		},
+		{
+			//edit record form
+			closeAfterEdit: true,				
+			width: 260,
+			drag: true,
+			mtype: 'POST',
+			recreateForm: true,
+			//--------------------------
+			beforeShowForm : function(e) {
+				var form = $(e[0]);
+
+				$('#subject_type',form).change(function(){
+					var selectvalue = this.value;
+					//#tr_----   .find----------
+					var sname = $('#tr_subject_name',form).find('select');					
+					sname.empty();					
+					if (selectvalue=="公共课程"){										
+						{% for epb in edit_public %}
+							sname.append("<option value='{{ epb }}'>{{ epb }}</option>");		
+						{% endfor %}						
+					}
+					else {
+						{% for epf in edit_profess %}
+							sname.append("<option value='{{ epf }}'>{{ epf }}</option>");		
+						{% endfor %}
+					};
+				});
+
+				//-----------------------------
+				form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+				style_edit_form(form);
+			},
+			reloadAfterSubmit: false,
+		},
+		{
+			//new record form
+			width: 260,	
+			drag: true,
+			addedrow:'last',			
+			closeAfterAdd: true,
+			recreateForm: true,	
+			//-----------------------------	
+			editData:{
+				"depart":s1_val,
+				"profess":s2_val,
+				"grade":s3_val			
+			},
+			//-----------------------------
+			beforeShowForm : function(e) {
+				var form = $(e[0]);			
+
+				$('#subject_type',form).change(function(){
+					var selectvalue = this.value;
+					var sname = $('#tr_subject_name',form).find('select');
+					
+					sname.empty();
+					if (selectvalue=="公共课程"){										
+						{% for epb in edit_public %}
+							sname.append("<option value='{{ epb }}'>{{ epb }}</option>");		
+						{% endfor %}						
+					}
+					else {
+						{% for epf in edit_profess %}
+							sname.append("<option value='{{ epf }}'>{{ epf }}</option>");		
+						{% endfor %}
+					};
+				});
+
+
+				//-----------------------------
+				form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+				style_edit_form(form);
+								
+			},
+			reloadAfterSubmit: false
+		},
+		{
+			//delete record form
+			recreateForm: true,
+			beforeShowForm : function(e) {
+				var form = $(e[0]);
+				if(form.data('styled')) return false;
+				
+				form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+				style_delete_form(form);
+				
+				form.data('styled', true);
+			}
+		},
+		{
+			//search form
+		},
+		{
+			//view record form
+		}
+	);
+
+	function style_edit_form(form) {
+		//update buttons classes
+		var buttons = form.next().find('.EditButton .fm-button');
+		buttons.addClass('btn btn-sm').find('[class*="-icon"]').hide();//ui-icon, s-icon
+		buttons.eq(0).addClass('btn-primary').prepend('<i class="ace-icon fa fa-check"></i>');
+		buttons.eq(1).prepend('<i class="ace-icon fa fa-times"></i>')
+		
+		buttons = form.next().find('.navButton a');
+		buttons.find('.ui-icon').hide();
+
+	};
+
+	function style_delete_form(form) {
+		var buttons = form.next().find('.EditButton .fm-button');
+		buttons.addClass('btn btn-sm btn-white btn-round').find('[class*="-icon"]').hide();//ui-icon, s-icon
+		buttons.eq(0).addClass('btn-danger').prepend('<i class="ace-icon fa fa-trash-o"></i>');
+		buttons.eq(1).addClass('btn-default').prepend('<i class="ace-icon fa fa-times"></i>')
+	};
+
+	function beforeDeleteCallback(e) {
+		var form = $(e[0]);
+		if(form.data('styled')) return false;
+		
+		form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+		style_delete_form(form);
+		
+		form.data('styled', true);
+	};
+
+	function beforeEditCallback(e) {
+		var form = $(e[0]);
+		form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+		style_edit_form(form);
+	};
+	
+
+	function updatePagerIcons(table) {
+		var replacement = 
+		{
+			'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+			'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+			'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+			'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+		};
+		$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
+			var icon = $(this);
+			var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+			
+			if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+		})
+	};
+
+
+	function enableTooltips(table) {
+		$('.navtable .ui-pg-button').tooltip({container:'body'});
+		$(table).find('.ui-pg-div').tooltip({container:'body'});
+	};
+
+
+	$(document).one('ajaxloadstart.page', function(e) {
+		$.jgrid.gridDestroy(grid_selector);
+		$('.ui-jqdialog').remove();
+	});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////	
+	jQuery(grid_selector).jqGrid('hideCol', [ "id","depart", "profess", "grade" ]);
+
+	//当屏幕大小变化的时候调整宽度
+	$(window).triggerHandler('resize.jqGrid');
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+});
+
+
+
+
+</script>
+{% endblock%}
+

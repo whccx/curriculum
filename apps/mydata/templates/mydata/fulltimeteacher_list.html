@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title> 全职教师 - Ace 后台管理系统</title>
+{% endblock %}
+
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+
+{% block content %}						
+	<p><H5>你的学校一共聘请了以下全职教师：</H5></p>
+	<table id="depart-table" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th class="center">序号</th>
+				<th class="center">教师名字</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for fttline in object_list %}
+			<tr>
+				<td class="center">{{ fttline.id }}</td>
+				<td class="center">{{ fttline.ft_name }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
+
+
+{% block scripts %}
+	{% include 'scripts.html' %}
+{% endblock%}

@@ -1,0 +1,598 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- page title -->
+{% block title %}
+	<title> 教师授课信息表 - Ace 后台管理系统</title>
+{% endblock %}
+
+<!-- page styles -->
+{% block mystyles %}
+	<link rel="stylesheet" href="{%static 'css/jquery-ui.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/bootstrap-datepicker3.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/ui.jqgrid.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/jquery-ui.custom.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/bootstrap-duallistbox.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/bootstrap-multiselect.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/select2.min.css'%}" />
+{% endblock %}
+
+<!-- page menu -->
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+<!-- page body -->
+{% block content %}
+<div name="testcc"></div>
+<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">	
+	<div style="border:1px solid #D0D0D0" class="col-">
+	<table id="grid-table"></table>
+	<div id="grid-pager"></div>
+	</div>
+
+<!--===================================================================-->
+
+	<h5> </h5>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="col-xs-12 col-sm-3 col-md-6 col-lg-3 widget-container-col">
+	<div class="widget-box widget-color-dark">
+		<div class="widget-header">
+			<h5 class="widget-title bigger lighter">
+				<i class="ace-icon fa fa-cogs"></i>
+				专业课程
+			</h5>
+		</div>
+
+		<div class="widget-body">
+			<div class="widget-main no-padding">
+				<table class="table table-striped table-bordered table-hover">
+					<tbody id="str_pf" align="center"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-xs-12 col-sm-3 col-md-6 col-lg-3 widget-container-col">
+	<div class="widget-box widget-color-orange">
+		<div class="widget-header">
+			<h5 class="widget-title bigger lighter">
+				<i class="ace-icon fa fa-table"></i>
+				公共课程
+			</h5>
+		</div>
+
+		<div class="widget-body">
+			<div class="widget-main no-padding">
+				<table class="table table-striped table-bordered table-hover">
+					<tbody id="str_pb" align="center"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-xs-12 col-sm-3 col-md-6 col-lg-3 widget-container-col">
+	<div class="widget-box widget-color-green">
+		<div class="widget-header">
+			<h5 class="widget-title bigger lighter">
+				<i class="ace-icon glyphicon glyphicon-ok"></i>
+				必须排:
+			</h5>
+		</div>
+
+		<div class="widget-body">
+			<div class="widget-main no-padding">
+				<table class="table table-striped table-bordered table-hover">
+					<tbody id="str_mt" align="center"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-xs-12 col-sm-3 col-md-6 col-lg-3 widget-container-col">
+	<div class="widget-box widget-color-red2">
+		<div class="widget-header">
+			<h5 class="widget-title bigger lighter">
+				<i class="ace-icon glyphicon glyphicon-remove"></i>
+				不能排:
+			</h5>
+		</div>
+
+		<div class="widget-body">
+			<div class="widget-main no-padding">
+				<table class="table table-striped table-bordered table-hover">
+					<tbody id="str_ut" align="center"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div></div>
+<!--===================================================================-->
+<div id="main-widget-container" class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+<div class="widget-container-col" id="widget-container-col" >
+	<div class="widget-box" id="widget-box">
+		<div class="widget-header">
+			<h5 class="widget-title">编辑教师信息：</h5>
+			<h5 class="widget-title" id="teacher_name_info" value=""></h5>
+		</div>
+
+		<div class="widget-body" id="widget-container-col-2">
+			<div class="widget-main">
+				<form class="form-horizontal" role="form" action="{% url 'setrule:tsm_edit'%}" method="POST" name="myform">
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<!-- 单选框 -->
+	<label class="control-label bolder blue ">请选择修改的内容:</label>
+	<input type='hidden' name='my_teacher_name' value='000' size="4" hidden>
+	<div class="radio col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<label class="col-md-12 col-lg-6"><h5>
+			<input name="form-field-radio" type="radio" value='1' class="ace col-lg-6 col-md-6" id="click-radio"/>
+			<span class="lbl"> 专业课程</span>
+			<input type='hidden' name='profess' value='1' size="4">
+		</h5></label>
+		<label class="col-md-12 col-lg-6"><h5>
+			<input name="form-field-radio" type="radio" value='2' class="ace col-lg-6 col-md-6"/>
+			<span class="lbl"> 公共课程</span>
+			<input type='hidden' name='public' value='2' size="4">
+		</h5></label>
+		<label class="col-md-12 col-lg-6"><h5>
+			<input name="form-field-radio" type="radio" value='3' class="ace col-lg-6 col-md-6"/>
+			<span class="lbl"> 必须排时间</span>
+			<input type='hidden' name='mtime' value='3' size="4">
+		</h5></label>
+		<label class="col-md-12 col-lg-6"><h5>
+			<input name="form-field-radio" type="radio" value='4' class="ace col-lg-6 col-md-6"/>
+			<span class="lbl"> 不能排时间</span>
+			<input type='hidden' name='untime' value='4' size="4">
+		</h5></label>
+	</div>
+						</div>
+						<span>　</span>
+						<!-- 双树列表 -->
+						<div class="col-xs-12">
+							<select multiple="multiple" size="5" name="duallistbox1" id="duallist">
+							</select>
+						</div>									
+						<div class="widget-body col-sm-12 col-lg-12 col-md-12 center">
+							<div class="widget-main col-sm-6 col-md-12 col-lg-6">
+								<h6 >最多排几节：
+								<!-- 限制只能输入正整数 0-30 -->
+								<input type="text" name="spinner1" id="spinner1" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" /></h6>
+							</div>
+							<div class="widget-main col-sm-6 col-md-12 col-lg-6">
+								<h6>最少排几节：
+								<!-- 限制只能输入正整数 0-30 -->
+								<input type="text" name="spinner2" id="spinner2" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" /></h6>
+							</div>
+						</div>
+						<!-- 按钮 -->
+						<div class="clearfix col-xs-12 col-sm-12 col-lg-12 col-md-12 center">
+							<button class="btn btn-info " type="submit">
+								<i class="ace-icon fa fa-check bigger-110"></i>
+								提交
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+{% endblock%}
+
+
+{% block scripts %}
+	{% include 'scripts.html' %}
+	<!-- page specific plugin scripts -->
+	<script src="{%static 'js/jquery.jqGrid.min.js'%}"></script>
+	<script src="{%static 'js/grid.locale-en.js'%}"></script>
+	<script src="{%static 'js/jquery-ui.custom.min.js'%}"></script>
+	<script src="{%static 'js/spinbox.min.js'%}"></script>
+	<script src="{%static 'js/jquery.bootstrap-duallistbox.min.js'%}"></script>
+{% endblock%}
+
+{% block myscripts %}
+<script type="text/javascript">
+	var grid_data = {{ Dics|safe}}; //表格基础数据
+	var inlabel_profess_subject=''; //定义四个全局变量，方便后面计算和调用
+	var ccxradio = '1';
+
+	jQuery(function($) {
+		var grid_selector = "#grid-table";
+		var pager_selector = "#grid-pager";
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+
+		//resize to fit page size
+		$(window).on(
+			'resize.jqGrid', 
+			function () {
+				$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
+	    	}
+	    )
+		
+		//resize on sidebar collapse/expand
+		$(document).on(
+			'settings.ace.jqGrid' ,
+			function(ev, event_name, collapsed) {
+				if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) 
+				{
+					//setTimeout is for webkit only to give time for DOM changes and then redraw!!!
+					setTimeout(
+						function() 
+							{$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );}, 
+						20
+					);
+				}
+	    	}
+	    )
+		
+		
+		jQuery(grid_selector).jqGrid({
+			
+			subGridRowExpanded: function (subgridDivId, rowId) {
+				var subgridTableId = subgridDivId + "_t";
+				$("#" + subgridDivId).html("<table id='" + subgridTableId + "'></table>");
+			},
+			
+			data: grid_data, //接收前面定义的传递数据
+			datatype: "local", //这里我们的数据使用local
+			height: 200,  //设置表格高度
+			colNames:['序号','教师名字','教师类型', '专业课程', '公共课程','最大节数','最小节数','必须排时间','不能排时间'],
+			colModel:[
+				{name:'id',index:'id', width:60, sorttype:"int", editable: true},
+				{name:'teacher_name',index:'teacher_name',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'teacher_type',index:'teacher_type',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'profess_subject',index:'profess_subject',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'public_subject',index:'public_subject',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'max_classes',index:'max_classes',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'min_classes',index:'min_classes',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'must_time',index:'must_time',editable:true,
+					editoptions:{size:"20",maxlength:"30"}},
+				{name:'unable_time',index:'unable_time',editable:true,
+					editoptions:{size:"20",maxlength:"30"}}
+			], 
+			
+			pager:pager_selector, //整个下面的按钮条					
+			viewrecords : true, //显示记录信息
+			recordtext: "显示：{0}-{1}，总共：{2}条 ",
+			rowNum:20, //默认显示几行
+			rowList:[10,20,30], //下拉设置显示页数										
+			pgtext : "第{0}页，共{1}页",
+			pgfirst:"首页",
+			pgnext:"下一页",
+			pgprev:"上一页",
+			pglast:"尾页",			
+			pgrecs:"设置显示多少条记录",		
+			multiselect: false,  //是否可以多选
+
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function(){
+					styleCheckbox(table);							
+					updateActionIcons(table);
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+
+			onSelectRow: function(id){
+				//////////////////////////////////////////////////////////
+				
+				document.getElementById("duallist").innerHTML=""; //清空双树列表
+				ccxdemo1.bootstrapDualListbox("refresh"); //刷新双树
+
+				var mymax_classes=jQuery(grid_selector).getCell(id, "max_classes"); //取最多排课时间
+				$('#spinner1').val(mymax_classes); //设置第一个数值框的默认数值
+				var mymin_classes=jQuery(grid_selector).getCell(id, "min_classes"); //取最少排课时间
+				$('#spinner2').val(mymin_classes); //设置第二个数值框的默认数值
+
+				var myteacher_name=jQuery(grid_selector).getCell(id, "teacher_name"); //取教师名字
+				document.getElementById("teacher_name_info").innerHTML=myteacher_name; 
+				$("[name='my_teacher_name']").val(id);
+				//设置编辑标题显示教师名字
+				
+				$("input[type='radio']:checked").attr("checked",false); 
+				//设置所有单选按钮的选择状态为：未选择
+
+				//////////////////////////////////////////////////////////
+				var mylist= ''; //初始化：ccxshow函数返回值
+				function ccxshow(str_ps,editrow,mylist) {					
+					var str_psok=jQuery(grid_selector).getCell(id, editrow); //取某个单元格数据：这里由id和参数editrow确定
+					var strps = str_psok.split(','); //格式化单元格数据，用','区分的，统一用split拆分进组
+					var strpsstr=''; //初始化：用来组合html代码，显示在小列表里面
+					var ccx_outlist=''; //初始化：没选中的项
+					var ccx_inlist= ''; //初始化：已选中的项
+					if (strps[0].length==0){
+						strpsstr=strpsstr+"<tr><td>"+ " ... " + "</td></tr>"; //小列表中：为空的时候用...显示
+					}
+					else {
+						var i=0;
+						for (var len=strps.length; i<len; i++){
+							for (var key in ccx_data) {						
+								if (key==parseInt(strps[i])) {								
+									strpsstr=strpsstr+"<tr><td>"+ccx_data[key] + "</td></tr>"; //一个一个取出 组成小列表的html代码
+									ccx_inlist += "<option value='"+key+"' selected='selected'>"+ccx_data[key]+"</option>";
+								//双树列表：已经选中的数据一个一个组成html代码，并赋值给ccx_inlist
+									delete ccx_data[key]; //从列表中删除已经选中的
+								}
+							}
+						}
+					};
+					for (var key in ccx_data) {
+						//遍历剩余列表，逐个取出组成html代码，并赋值ccx_outlist
+						ccx_outlist += "<option value='" + key+"'>"+ ccx_data[key] + "</option>";						
+					};
+					document.getElementById(str_ps).innerHTML=strpsstr;	//将小列表的html代码添加进去（id=str_ps）位置
+					if (mylist==null){}
+					else {
+						mylist=ccx_inlist+ccx_outlist;	//将已选中和未选中的html代码组合并赋值mylist	
+						return mylist //函数ccxshow()返回mylist
+					}
+				};
+
+				var ccx_data = {{ Subject_profess_dics|safe }}; //设置操作数据：专业课程
+				inlabel_profess_subject = ccxshow("str_pf","profess_subject","inlabel_profess_subject");
+
+				ccx_data = {{ Subject_public_dics|safe }}; //设置操作数据：公共课程
+				inlabel_public_subject = ccxshow("str_pb","public_subject",'');
+				
+				ccx_data = {{ weekclasses|safe }}; //设置操作数据：必须排时间
+				inlabel_must_time = ccxshow("str_mt","must_time",'');
+
+				ccx_data = {{ weekclasses|safe }}; //设置操作数据：不能排时间，此处再次调用是因为函数有修改ccx_data项
+				inlabel_unable_time = ccxshow("str_ut","unable_time",'');
+								
+				//setTimeout(function () {
+				//}, 2000);
+				
+
+				ccxdemo1.append(inlabel_profess_subject);
+				ccxdemo1.bootstrapDualListbox("refresh");								
+
+				document.getElementById("click-radio").click();	//最后模拟点击单选按钮，因为前面清空了状态。
+
+				var sp_c1 = jQuery(grid_selector).getCell(id, "profess_subject");
+				var sp_c2 = jQuery(grid_selector).getCell(id, "public_subject");
+				var sp_c3 = jQuery(grid_selector).getCell(id, "must_time");
+				var sp_c4 = jQuery(grid_selector).getCell(id, "unable_time");
+				$("[name='profess']").val(sp_c1);
+				$("[name='public']").val(sp_c2);
+				$("[name='mtime']").val(sp_c3);
+				$("[name='untime']").val(sp_c4);
+				
+			},
+			
+			editurl: "{% url 'setrule:make_tsm'%}",//编辑grid的时候调用url
+			caption: "",//表头显示信息
+	
+		});
+
+		
+
+		$(window).triggerHandler('resize.jqGrid');	
+		//navButtons
+		jQuery(grid_selector).jqGrid('navGrid',pager_selector,
+			{ 	//navbar options
+				edit: false,
+				editicon : 'ace-icon fa fa-pencil blue',
+				edittext: "修改",
+    			edittitle: "修改你选择的记录", 
+				add: false,
+				addicon : 'ace-icon fa fa-plus-circle purple',
+				addtext:"增加",  
+				addtitle: "增加一行记录",  
+				del: false,
+				delicon : 'ace-icon fa fa-trash-o red',
+				deltext: "删除",
+    			deltitle: "删除你选择的记录", 
+				search: true,
+				searchicon : 'ace-icon fa fa-search orange',
+				searchtext:"查找",
+				searchtitle: "查找某个记录", 
+				refresh: true,
+				refreshicon : 'ace-icon fa fa-refresh green',
+				refreshtext:"刷新",
+				refreshtitle: "刷新数据表格", 
+				view: false,
+				viewicon : 'ace-icon fa fa-search-plus grey',
+			},
+			{
+				//edit record form
+				//closeAfterEdit: true,
+				//width: 700,
+			},
+			{
+				//new record form
+				//width: 700,
+			},
+			{
+				//delete record form
+			},
+			{
+				//search form
+				recreateForm: true,
+				closeAfterSearch: true,
+				afterShowSearch: function(e){
+					var form = $(e[0]);
+					form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+					style_search_form(form);
+				},
+				afterRedraw: function(){
+					style_search_filters($(this));
+				},
+				multipleSearch: true,
+				/**
+				multipleGroup:true,
+				showQuery: true
+				*/
+			},
+			{
+				//view record form
+				recreateForm: true,
+				beforeShowForm: function(e){
+					var form = $(e[0]);
+					form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+				}
+			}
+		)
+
+		function style_search_filters(form) {
+			form.find('.delete-rule').val('X');
+			form.find('.add-rule').addClass('btn btn-xs btn-primary');
+			form.find('.add-group').addClass('btn btn-xs btn-success');
+			form.find('.delete-group').addClass('btn btn-xs btn-danger');
+		}
+		function style_search_form(form) {
+			var dialog = form.closest('.ui-jqdialog');
+			var buttons = dialog.find('.EditTable')
+			buttons.find('.EditButton a[id*="_reset"]').addClass('btn btn-sm btn-info').find('.ui-icon').attr('class', 'ace-icon fa fa-retweet');
+			buttons.find('.EditButton a[id*="_query"]').addClass('btn btn-sm btn-inverse').find('.ui-icon').attr('class', 'ace-icon fa fa-comment-o');
+			buttons.find('.EditButton a[id*="_search"]').addClass('btn btn-sm btn-purple').find('.ui-icon').attr('class', 'ace-icon fa fa-search');
+		}
+		
+		function styleCheckbox(table) {}
+		function updateActionIcons(table) {}		
+		function updatePagerIcons(table) {
+			var replacement = 
+			{
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
+				var icon = $(this);
+				var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+				
+				if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+			})
+		}
+	
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({container:'body'});
+			$(table).find('.ui-pg-div').tooltip({container:'body'});
+		}
+		//ajax
+		$(document).one('ajaxloadstart.page', function(e) {
+			$.jgrid.gridDestroy(grid_selector);
+			$('.ui-jqdialog').remove();
+		});
+
+
+	
+////////////////////////////两个数值框的设置//////////////////////////////////////
+
+		$('#spinner1').ace_spinner({value:0,min:0,max:30,step:10,on_sides: true,icon_up:'ace-icon fa fa-plus bigger-110',icon_down:'ace-icon fa fa-minus bigger-110',btn_up_class:'btn-success',btn_down_class:'btn-danger'});
+		$('#spinner2').ace_spinner({value:0,min:0,max:30,step:10, on_sides: true, icon_up:'ace-icon fa fa-plus bigger-110', icon_down:'ace-icon fa fa-minus bigger-110', btn_up_class:'btn-success' , btn_down_class:'btn-danger'});
+
+
+	});
+////////////////////////////初始化双树//////////////////////////////////////	
+	
+		var ccxdemo1 = $('select[name="duallistbox1"]').bootstrapDualListbox({
+			nonSelectedListLabel: '　　未选中：',
+			selectedListLabel: '　　已选中：',
+			moveAllLabel: '添加全部',
+			removeAllLabel: '移除全部',
+			showFilterInputs: false,
+		});	
+
+///////////////////////////////////////////////////////////////////////////
+
+		$("input[type='radio']").change(function(){
+
+			var select_id = $("[name='my_teacher_name']").val();
+			if (select_id == "000") {
+				alert("请单击表格行，选择一位教师！");
+				$("input[type='radio']:checked").attr("checked",false); 
+			}
+			else {				
+				var arr = ccxdemo1.val();
+				switch (parseInt(ccxradio)) {
+					case 1:
+						$("[name='profess']").val(arr);
+						break;
+					case 2:
+						$("[name='public']").val(arr);
+						break;
+					case 3:
+						$("[name='mtime']").val(arr);					
+						break; 
+					case 4:
+						$("[name='untime']").val(arr);					
+						break;
+				};
+				var c_profess = $("[name='profess']").val();
+				var c_public = $("[name='public']").val();
+				var c_mtime = $("[name='mtime']").val();
+				var c_untime = $("[name='untime']").val();
+				//=======================
+				ccxradio = $("input[type='radio']:checked").val();
+				document.getElementById("duallist").innerHTML="";
+				switch (parseInt(ccxradio)) {
+					case 1:
+						var my_newdata = {{ Subject_profess_dics|safe }};
+						editshow(c_profess);
+						break;
+					case 2:
+						var my_newdata = {{ Subject_public_dics|safe }};
+						editshow(c_public);
+						break;
+					case 3:
+						var my_newdata = {{ weekclasses|safe }};
+						editshow(c_mtime);
+						break;
+					case 4:
+						var my_newdata = {{ weekclasses|safe }};					 
+						editshow(c_untime);
+						break;
+				}
+			};
+
+			function editshow(can){
+				var ccxlist=can.split(',');				
+				var my_inlist='';
+				var my_outlist='';
+				var myinputlist='';
+				var ccx_newdata=my_newdata;
+				var i=0;
+				if (ccxlist[0].length==0){
+					my_inlist='';
+				}
+				else 
+				{
+					for (var len=ccxlist.length; i<len; i++) {
+						for (var key in ccx_newdata) {
+							if (key==parseInt(ccxlist[i])) {
+								my_inlist += "<option value='"+key+"' selected='selected'>"+ccx_newdata[key]+"</option>";
+								//双树列表：已经选中的数据一个一个组成html代码，并赋值给ccx_inlist
+								delete ccx_newdata[key]; //从列表中删除已经选中的
+							}
+						}
+					}			
+					
+				};
+				for (var key in ccx_newdata) {
+					//遍历剩余列表，逐个取出组成html代码，并赋值ccx_outlist
+					my_outlist += "<option value='" + key +"'>"+ ccx_newdata[key] + "</option>";
+				};
+				myinputlist = my_inlist + my_outlist;
+				ccxdemo1.append(myinputlist);
+				ccxdemo1.bootstrapDualListbox("refresh");
+			};
+		});
+</script>
+{% endblock%}
+

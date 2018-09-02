@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- page title -->
+{% block title %}
+	<title> 制定规则 - Ace 后台管理系统</title>
+{% endblock %}
+
+<!-- page styles -->
+{% block mystyles %}
+{% endblock %}
+
+<!-- page menu -->
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+<!-- page body -->
+{% block content %}
+<div class="col-lg-7 col-md-10 col-xs-12 col-sm-8">
+	<!------------------------------------------------>
+	<h5> </h5>
+	<button class="btn btn-danger btn-sm" id="test1">基本设定测试</button>
+	<button class="btn btn-danger btn-sm" id="test2">教师设定测试</button>
+	<button class="btn btn-danger btn-sm" id="test3">授课计划测试</button>
+	<button class="btn btn-danger btn-sm" id="test4">综合测试</button>
+	<h5> </h5>
+	<!------------------------------------------------>
+	<div>
+		<select class="form-control" multiple="multiple" style="height: 300px" name="meg">
+			<option>请点击上面的按钮开始</option>
+		</select>
+	</div>
+	<!------------------------------------------------>
+	<h6 style="color:#666">温馨提示：请先执行完以上测试，全部通过后再点击菜单：综合评估</h6>
+	<!------------------------------------------------>
+</div>
+{% endblock%}
+
+<!-- page js -->
+{% block scripts %}
+	{% include 'scripts.html' %}
+{% endblock%}
+
+<!-- page script -->
+{% block myscripts %}
+<script type="text/javascript" charset="gbk">
+	$("#test1").click(function(){
+		var onepass='no';
+		var twopass='no';
+		var threepass='no';
+		var fourpass='no';
+		var the = $('select[name="meg"]');
+		the.empty();
+		the.append("<option>============第1步测试============</option>");	
+		//-----------one----------------------maxid		
+		if ({{maxid}}==1){			
+			the.append("<option>1,场所数量大于班级------测试通过</option>");
+			onepass='ok';
+		}else{
+			var message = "<option style='color:red'>1,场所数量小于班级------测试失败</option>"
+				message += "<option>请回去修改：基础数据->场室或班级</option>"
+			the.append(message);
+			$("#test1,#test2,#test3,#test4").addClass('disabled'); //
+			onepass='no'
+		};
+		//-----------two---------------------maxnum
+		if (onepass=='ok'){
+			if ({{maxnum}}==1){			
+				the.append("<option>2,场所最大容量大于班级最大容量------测试通过</option>");
+				twopass='ok';
+			}else{
+				var message = "<option style='color:red'>2,场所最大容量小于班级最大容量------测试失败</option>"
+					message += "<option>请回去修改：基础数据->场室或班级</option>"
+				the.append(message);
+				$("#test1,#test2,#test3,#test4").addClass('disabled'); //
+				twopass='no'
+			};	
+		};
+		//-----------three---------------------tnum
+		if(twopass=='ok'){
+			if ({{tnum}}==1){
+				the.append("<option>3,教师数量足够------测试通过</option>");
+				threepass='ok';			
+			}else{
+				var message = "<option style='color:red'>3,教师数量小于(班级数量*2)------测试失败</option>"
+					message += "<option>请回去修改：基础数据->教师或班级</option>"
+				the.append(message);
+				$("#test1,#test2,#test3,#test4").addClass('disabled'); //
+				threepass='no';
+			};
+		};
+		//------------four-------------------gtplay
+		if(threepass='ok'){
+			if ({{gtplay}}==1){
+				the.append("<option>4,每个年级教学计划均正常(26-30节)------测试通过</option>");
+				fourpass='ok';			
+			}else{
+				var message = "<option style='color:red'>4,有个年级教学计划超过30节或小于26节------测试失败</option>"
+					message += "<option>请回去修改：关联和规则->年级教学计划</option>"
+				the.append(message);
+				$("#test1,#test2,#test3,#test4").addClass('disabled'); //
+				fourpass='no';
+			};
+		};
+	});
+</script>
+{% endblock%}

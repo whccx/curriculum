@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- page title -->
+{% block title %}
+	<title> 基础信息总表 - Ace 后台管理系统</title>
+{% endblock %}
+
+<!-- page styles -->
+{% block mystyles %}
+	<link rel="stylesheet" href="{%static 'css/jquery-ui.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/bootstrap-datepicker3.min.css'%}" />
+	<link rel="stylesheet" href="{%static 'css/ui.jqgrid.min.css'%}" />
+{% endblock %}
+
+<!-- page menu -->
+{% block menu %}
+	{% include 'menu.html' %}
+{% endblock%}
+
+<!-- page body -->
+{% block content %}
+<div class="col-md-10">
+	{{ran}}
+</div>
+
+{% endblock%}
+
+
+{% block scripts %}
+	{% include 'scripts.html' %}
+	<!-- page specific plugin scripts -->
+{% endblock%}
+
+{% block myscripts %}
+<script type="text/javascript">
+
+</script>
+{% endblock%}
+
+
+
+
