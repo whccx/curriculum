@@ -21,7 +21,10 @@
 <!-- page body -->
 {% block content %}
 <div class="col-md-10">
-	{{ran}}
+	理论：{{ ran.ts }}
+	上机：{{ ran.ps }}
+	实训：{{ ran.p }}
+	总节数：{{ ran.total }}
 </div>
 
 {% endblock%}

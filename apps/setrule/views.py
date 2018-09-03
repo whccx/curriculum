@@ -156,17 +156,17 @@ def m_tsm(request):
 	show_mbc_list = models.Maketeachsm.objects.all()
 	#data dics
 	Dics = []
-	for mbc_dic in show_mbc_list:
+	for m in show_mbc_list:
 		dic_ccx = {
-		"id": mbc_dic.id,
-		"teacher_name": mbc_dic.teacher_name,
-		"teacher_type": mbc_dic.teacher_type,
-		"public_subject" : mbc_dic.public_subject,
-		"profess_subject" : mbc_dic.profess_subject,
-		"max_classes" : mbc_dic.max_classes,
-		"min_classes" : mbc_dic.min_classes,
-		"must_time" : mbc_dic.must_time,
-		"unable_time" : mbc_dic.unable_time
+		"id": m.id,
+		"teacher_name": m.teacher_name,
+		"teacher_type": m.teacher_type,
+		"public_subject" : m.public_subject,
+		"profess_subject" : m.profess_subject,
+		"max_classes" : m.max_classes,
+		"min_classes" : m.min_classes,
+		"must_time" : m.must_time,
+		"unable_time" : m.unable_time
 		}		
 		Dics.append(dic_ccx)
 
@@ -273,43 +273,44 @@ def m_gtp(request):
 			select_grade=request.POST.get('select3','0')
 			
 	#------------------------------------------
-	show_gtp_list =models.Makegradetp.objects.filter(depart=select_depart,profess=select_profess,grade=select_grade)	
+	sl =models.Makegradetp.objects.filter(
+		depart=select_depart,profess=select_profess,grade=select_grade)	
 	myrows=[]
-	myrowsone=[]
-	mycellone=[]
+	e=[]
+	co=[]
 	Dics={}
-	total_theory_classes=0
-	total_practice_classes=0
-	total_classes=0
+	tt=0
+	tp=0
+	ta=0
 	
 	#-----------
-	for mbc_dic in show_gtp_list:
-		mycellone=[
-			mbc_dic.id,
-			mbc_dic.subject_type,
-			mbc_dic.subject_name,			
-			mbc_dic.theory_classes,			
-			mbc_dic.practice_classes,
-			mbc_dic.prior_order,			
-			mbc_dic.grade,
-			mbc_dic.profess,
-			mbc_dic.depart
+	for d in sl:
+		co=[
+			d.id,
+			d.subject_type,
+			d.subject_name,			
+			d.theory_classes,			
+			d.practice_classes,
+			d.prior_order,			
+			d.grade,
+			d.profess,
+			d.depart
 		]
-		myrowsone={"id":str(mbc_dic.id),"cell":mycellone}
-		myrows.append(myrowsone)
-		total_theory_classes+=mbc_dic.theory_classes
-		total_practice_classes+=mbc_dic.practice_classes
+		e={"id":str(d.id),"cell":co}
+		myrows.append(e)
+		tt+=d.theory_classes
+		tp+=d.practice_classes
 
-	total_classes=total_theory_classes+total_practice_classes
+	ta=tt+tp
 
 	#------------
 
 	Dics={
 		"page":"1",
-		"total":str(len(show_gtp_list)//10+1),
-		"records":str(len(show_gtp_list)),
+		"total":str(len(sl)//10+1),
+		"records":str(len(sl)),
 		"rows":myrows,
-		"userdata":{"theory_classes":"总节数:","practice_classes":str(total_classes)+"节"}
+		"userdata":{"theory_classes":"总节数:","practice_classes":str(ta)+"节"}
 		}
 
 	with open("static/json/make_gtp.json","w") as f:
@@ -384,9 +385,24 @@ def test_rule(request):
 #--------------------------------------------------------------------
 @Check_Login
 def eva_report(request):
-	from random import choice 	
-	ran= choice(weeknum)
-	return render(request,'setrule/eva_report.html',{'ran':ran})
+	from django.db.models import Sum
+	cc=models.Makegradetp.objects.all()
+
+	a=cc.aggregate(a=Sum('theory_classes')).get('a')
+	aa=cc.filter(subject_name='自习').aggregate(a=Sum('theory_classes')).get('a')
+
+	n=cc.aggregate(a=Sum('practice_classes')).get('a')
+	t_nn=cc.filter(profess='电子电工')
+	nn=t_nn.aggregate(a=Sum('practice_classes')).get('a')
+	nnn=t_nn.filter(subject_name='计算机基础').aggregate(a=Sum('practice_classes')).get('a')
+
+	r={}
+	r['ts']=a-aa
+	r['ps']=n-nn+nnn	
+	r['p']=nn-nnn
+	r['total']=r['ts']+r['ps']+r['p']
+
+	return render(request,'setrule/eva_report.html',{'ran':r})
 
 #--------------------------------------------------------------------
 @Check_Login
