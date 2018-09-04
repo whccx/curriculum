@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import HttpResponse,HttpResponseRedirect
-from django.shortcuts import render,redirect
-
+from django.shortcuts import render
+from setrule import models
+from mydata import models as mm
+from django.db.models import Max,Sum
 import json
 
-from setrule import models
-from mydata.models import Myclass,Grade,Professional,Schoolplace,Public_subjects
-from mydata.models import Profess_subjects,Fulltimeteacher,Parttimeteacher,Substituteteacher
-#--------------------------------------------------------------------
 from users.views import Check_Login
-
-@Check_Login	
+#--------------------------------------------------------------------
+@Check_Login
 def sindex(request):		
-	show_mbc_list = models.Makebaseclass.objects.all()
-	if show_mbc_list.exists()==False:
-		create_mbc()
+	sl = models.Makebaseclass.objects.all()
+	if sl.exists()==False:create_mbc()
 	Dics = []
-	for md in show_mbc_list:
+	for md in sl:
 		dic_ccx = {
 			"id": md.id,
 			"stock": md.baseclass_name,
@@ -33,10 +29,10 @@ def sindex(request):
 		}		
 		Dics.append(dic_ccx)
 	#------------------
-	sp=Schoolplace.objects.all()
+	sp=mm.Schoolplace.objects.all()
 	mylist=stradd(sp,'schoolplace_num')
 	#------------------
-	ep = Profess_subjects.objects.all()
+	ep = mm.Profess_subjects.objects.all()
 	ep_dic=stradd(ep,'ms_name')
 	#------------------	
 	fl=models.Maketeachsm.objects.filter(teacher_type='全职')
@@ -54,18 +50,16 @@ def stradd(ep,f): # 参数f是参数ep里面的key,表里的字段名
 	i=1
 	for p in ep:
 		e=getattr(p,f)     #= p.f
-		if i==len(ep):
-			mstr=mstr+e+str(":")+e
-		else:
-			mstr=mstr+e+str(":")+e+str(";")
+		if i==len(ep):mstr=mstr+e+str(":")+e
+		else:mstr=mstr+e+str(":")+e+str(";")
 		i+=1
 	return mstr
 
 def create_mbc():
-	smclists = Myclass.objects.all()	
-	for sl in smclists:
-		pflist=Professional.objects.get(pf_name=sl.m_pf_name)
-		glist=Grade.objects.get(grade_name=sl.m_grade_name,g_pf_name=sl.m_pf_name)
+	ss = mm.Myclass.objects.all()	
+	for sl in ss:
+		pflist=mm.Professional.objects.get(pf_name=sl.m_pf_name)
+		glist=mm.Grade.objects.get(grade_name=sl.m_grade_name,g_pf_name=sl.m_pf_name)
 		models.Makebaseclass.objects.create(
 			id=sl.id,
 			baseclass_name=sl.myclass_name,
@@ -84,67 +78,59 @@ def create_mbc():
 @Check_Login
 def m_tsm(request):	
 	#---------
-	teach_base_parttime = Parttimeteacher.objects.all()
-	for tbp in teach_base_parttime:
-		mbc_tn=models.Maketeachsm.objects.filter(teacher_name=tbp.pt_name)
-		if mbc_tn.exists()==False:
-			mt_id=models.Maketeachsm.objects.all()
-			if mt_id.exists()==False:
-				mbc_id=1
-			else:
-				mbc_id=int(models.Maketeachsm.objects.latest('id').id)+1
-			models.Maketeachsm.objects.create(teacher_name=tbp.pt_name,id=mbc_id,teacher_type='兼职')
+	a=models.Maketeachsm.objects
+	tp = mm.Parttimeteacher.objects.all()
+	for t in tp:
+		n=a.filter(teacher_name=t.pt_name)
+		if n.exists()==False:
+			i=a.all()
+			if i.exists()==False:i=1
+			else:i=int(a.latest('id').id)+1
+			a.create(teacher_name=t.pt_name,id=i,teacher_type='兼职')
 	#---------
-	teach_base_fulltime = Fulltimeteacher.objects.all()
-	for tbf in teach_base_fulltime:
-		mbc_tn=models.Maketeachsm.objects.filter(teacher_name=tbf.ft_name)
-		if mbc_tn.exists()==False:
-			mbc_id=int(models.Maketeachsm.objects.latest('id').id)+1
-			models.Maketeachsm.objects.create(teacher_name=tbf.ft_name,id=mbc_id,teacher_type='全职')
+	tb = mm.Fulltimeteacher.objects.all()
+	for t in tb:
+		n=a.filter(teacher_name=t.ft_name)
+		if n.exists()==False:
+			i=int(a.latest('id').id)+1
+			a.create(teacher_name=t.ft_name,id=i,teacher_type='全职')
 	#---------
-	teach_base_substitute = Substituteteacher.objects.all()
-	for tbs in teach_base_substitute:
-		mbc_tn=models.Maketeachsm.objects.filter(teacher_name=tbs.st_name)
-		if mbc_tn.exists()==False:
-			mbc_id=int(models.Maketeachsm.objects.latest('id').id)+1
-			models.Maketeachsm.objects.create(teacher_name=tbs.st_name,id=mbc_id,teacher_type='代课')
+	ts = mm.Substituteteacher.objects.all()
+	for s in ts:
+		n=a.filter(teacher_name=s.st_name)
+		if n.exists()==False:
+			i=int(a.latest('id').id)+1
+			a.create(teacher_name=s.st_name,id=i,teacher_type='代课')
 	#-------------------------------------
 	#teach subject and time
-	Subject_public_dics={}
-	show_ps_list = Public_subjects.objects.all()
-	for ps_dic in show_ps_list:
-		Subject_public_dics[ps_dic.id] = ps_dic.ps_name
+	pb={}
+	sp = mm.Public_subjects.objects.all()
+	for d in sp:pb[d.id] = d.ps_name
 
-	Subject_profess_dics={}
-	show_ms_list = Profess_subjects.objects.all()
-	for ms_dic in show_ms_list:
-		Subject_profess_dics[ms_dic.id] = ms_dic.ms_name
+	pf={}
+	ss = mm.Profess_subjects.objects.all()
+	for d in ss:pf[d.id] = d.ms_name
 
-	if request.method == 'POST':		
-		my_teacher_name=request.POST.get('my_teacher_name','')
-		maxme = request.POST.get('spinner1','')
-		minme = request.POST.get('spinner2','')
-		c_profess = request.POST.get('profess','')
-		c_public = request.POST.get('public','')
-		c_mtime = request.POST.get('mtime','')
-		c_untime = request.POST.get('untime','')
-		c_radio = request.POST.get('form-field-radio','')
-		c_duallistbox = request.POST.getlist('duallistbox1')
-		myduallist = ""
-		for i in range(len(c_duallistbox)):			
-			if i==0:
-				myduallist = str(c_duallistbox[i])
-			else:
-				myduallist = myduallist + ',' + str(c_duallistbox[i])
-		if c_radio=="1":
-			c_profess = myduallist
-		if c_radio=="2":
-			c_public = myduallist
-		if c_radio=="3":
-			c_mtime = myduallist
-		if c_radio=="4":
-			c_untime = myduallist
-		models.Maketeachsm.objects.filter(id=my_teacher_name).update(
+	if request.method == 'POST':
+		b=request.POST
+		my_teacher_name=b.get('my_teacher_name','')
+		maxme = b.get('spinner1','')
+		minme = b.get('spinner2','')
+		c_profess = b.get('profess','')
+		c_public = b.get('public','')
+		c_mtime = b.get('mtime','')
+		c_untime = b.get('untime','')
+		c_radio = b.get('form-field-radio','')
+		cd = b.getlist('duallistbox1')
+		ml = ""
+		for i in range(len(cd)):			
+			if i==0:ml = str(cd[i])
+			else:ml = ml + ',' + str(cd[i])
+		if c_radio=="1":c_profess = ml
+		if c_radio=="2":c_public = ml
+		if c_radio=="3":c_mtime = ml
+		if c_radio=="4":c_untime = ml
+		a.filter(id=my_teacher_name).update(
 			profess_subject=c_profess,
 			public_subject=c_public,
 			max_classes=maxme,
@@ -153,10 +139,9 @@ def m_tsm(request):
 			unable_time=c_untime,
 			)
 		
-	show_mbc_list = models.Maketeachsm.objects.all()
-	#data dics
+	smls = a.all()
 	Dics = []
-	for m in show_mbc_list:
+	for m in smls:
 		dic_ccx = {
 		"id": m.id,
 		"teacher_name": m.teacher_name,
@@ -173,8 +158,8 @@ def m_tsm(request):
 	return render(
 			request,'setrule/m_tsm.html',
 			{
-			'Subject_public_dics':json.dumps(Subject_public_dics),
-			'Subject_profess_dics':json.dumps(Subject_profess_dics),
+			'Subject_public_dics':json.dumps(pb),
+			'Subject_profess_dics':json.dumps(pf),
 			'Dics':json.dumps(Dics),				
 			'weekclasses':json.dumps(weekclasses),
 			},
@@ -183,106 +168,77 @@ def m_tsm(request):
 #--------------------------------------------------------------------	
 @Check_Login
 def m_gtp(request):
-	select_depart=""
-	select_profess=""
-	select_grade=""
-
-	show_mbc_list = models.Makebaseclass.objects.all()
-	all_grade=[]
-	all_profess=[]
-	all_depart=[]
-
-	for mbc_dic in show_mbc_list:
-		#
-		if mbc_dic.basegrade_name not in all_grade:
-			all_grade.append(mbc_dic.basegrade_name)
-		#
-		if mbc_dic.baseprofess_name not in all_profess:
-			all_profess.append(mbc_dic.baseprofess_name)
-		#
-		if mbc_dic.basedepart_name not in all_depart:
-			all_depart.append(mbc_dic.basedepart_name)		
-	if select_grade=="":
-		select_grade=all_grade[0]
-	if select_profess=="":
-		select_profess=all_profess[0]
-	if select_depart=="":
-		select_depart=all_depart[0]
-
+	a=models.Makegradetp.objects
+	select_depart="";select_profess="";select_grade=""
+	sml = models.Makebaseclass.objects.all()
+	all_grade=[];all_profess=[];all_depart=[]
+	for m in sml:
+		aa=m.basegrade_name
+		bb=m.baseprofess_name
+		cc=m.basedepart_name
+		if aa not in all_grade:	all_grade.append(aa)		
+		if bb not in all_profess:all_profess.append(bb)
+		if cc not in all_depart:all_depart.append(cc)		
+	if select_grade=="":select_grade=all_grade[0]
+	if select_profess=="":select_profess=all_profess[0]
+	if select_depart=="":select_depart=all_depart[0]
 	#----------------------------
-	edit_public=[]
-	edit_profess=[]
-
-	edit_publics = Public_subjects.objects.all()
-	for epb in edit_publics:
-		edit_public.append(epb.ps_name)
-
-	edit_professs = Profess_subjects.objects.all()
-	for epf in edit_professs:
-		edit_profess.append(epf.ms_name)
-
+	pb=[];pf=[]
+	pbs = mm.Public_subjects.objects.all()
+	pfs = mm.Profess_subjects.objects.all()
+	for e in pbs:pb.append(e.ps_name)	
+	for e in pfs:pf.append(e.ms_name)
 	#----------------------------
-
 	if request.method == 'POST':
-		#print request.body
-		myid=request.POST.get('id','0')
-		my_subject_name=request.POST.get('subject_name','')
-		my_theory_classes=int(request.POST.get('theory_classes','0'))
-		my_practice_classes=int(request.POST.get('practice_classes','0'))
-		my_prior_order=int(request.POST.get('prior_order','0'))
-		my_cha=request.POST.get('oper','')
+		b=request.POST
+		myid=b.get('id','0')
+		ms=b.get('subject_name','')
+		mt=int(b.get('theory_classes','0'))
+		mpc=int(b.get('practice_classes','0'))
+		mpo=int(b.get('prior_order','0'))
+		my_cha=b.get('oper','')
 		if my_cha=="edit":
-			edit_subject_type=request.POST.get('subject_type','')
-			models.Makegradetp.objects.filter(id=myid).update(
-				subject_name=my_subject_name,
-				theory_classes=my_theory_classes,
-				practice_classes=my_practice_classes,
-				prior_order=my_prior_order,
-				subject_type=edit_subject_type,
+			est=b.get('subject_type','')
+			a.filter(id=myid).update(
+				subject_name=ms,
+				theory_classes=mt,
+				practice_classes=mpc,
+				prior_order=mpo,
+				subject_type=est,
 				)
-		if my_cha=="del":
-			models.Makegradetp.objects.filter(id=myid).delete()
+		if my_cha=="del":a.filter(id=myid).delete()
 		if my_cha=="add":
-			add_grade=request.POST.get('grade','')
-			add_profess=request.POST.get('profess','')
-			add_depart=request.POST.get('depart','')
-			add_subject_type=request.POST.get('subject_type','')
-			show_mbc_list = models.Makegradetp.objects.all()
+			add_grade=b.get('grade','')
+			add_profess=b.get('profess','')
+			add_depart=b.get('depart','')
+			ast=b.get('subject_type','')
+			sml = a.all()
 			meid=0
-			for mbc_dic in show_mbc_list:
-				if mbc_dic.id>meid:
-					lsid=mbc_dic.id
+			for m in sml:
+				if m.id>meid:
+					lsid=m.id
 					if lsid-meid>1:
 						break						
-					else:
-						meid=mbc_dic.id
-			models.Makegradetp.objects.create(
+					else:meid=m.id
+			a.create(
 				id=meid+1,
-				subject_name=my_subject_name,
-				theory_classes=my_theory_classes,
-				practice_classes=my_practice_classes,
-				prior_order=my_prior_order,
+				subject_name=ms,
+				theory_classes=mt,
+				practice_classes=mpc,
+				prior_order=mpo,
 				grade=add_grade,
 				profess=add_profess,
 				depart=add_depart,
-				subject_type=add_subject_type,
+				subject_type=ast,
 				)
 		if my_cha=="my_search":
-			select_depart=request.POST.get('select1','0')
-			select_profess=request.POST.get('select2','0')
-			select_grade=request.POST.get('select3','0')
+			select_depart=b.get('select1','0')
+			select_profess=b.get('select2','0')
+			select_grade=b.get('select3','0')
 			
 	#------------------------------------------
-	sl =models.Makegradetp.objects.filter(
-		depart=select_depart,profess=select_profess,grade=select_grade)	
-	myrows=[]
-	e=[]
-	co=[]
-	Dics={}
-	tt=0
-	tp=0
-	ta=0
-	
+	sl =a.filter(depart=select_depart,profess=select_profess,grade=select_grade)	
+	myrows=[];e=[];co=[];Dics={};tt=0;tp=0;ta=0
 	#-----------
 	for d in sl:
 		co=[
@@ -300,7 +256,6 @@ def m_gtp(request):
 		myrows.append(e)
 		tt+=d.theory_classes
 		tp+=d.practice_classes
-
 	ta=tt+tp
 
 	#------------
@@ -324,8 +279,8 @@ def m_gtp(request):
 			'select_depart':select_depart,
 			'select_profess':select_profess,
 			'select_grade':select_grade,
-			'edit_public':edit_public,
-			'edit_profess':edit_profess
+			'edit_public':pb,
+			'edit_profess':pf,
 			})
 
 #--------------------------------------------------------------------
@@ -337,31 +292,26 @@ def ins_rule(request):
 @Check_Login
 def test_rule(request):
 	#------------one1
-	sp_maxid=Schoolplace.objects.latest('id').id
-	mc_maxid=Myclass.objects.latest('id').id
-	if mc_maxid<=sp_maxid:
-		maxid=1
-	else:
-		maxid=0
+	sp_maxid=mm.Schoolplace.objects.latest('id').id
+	mc_maxid=mm.Myclass.objects.latest('id').id
+	if mc_maxid<=sp_maxid:maxid=1
+	else:maxid=0
 	#------------one2
-	sp_pnum=max(Schoolplace.objects.values('max_seats')).values()[0]
-	mc_pnum=max(Myclass.objects.values('myclass_num')).values()[0]
-	if sp_pnum>mc_pnum:
-		maxnum=1
-	else:
-		maxnum=0
-	#------------one3
+	sp_pnum=mm.Schoolplace.objects.aggregate(a=Max('max_seats')).get('a')
+	mc_pnum=mm.Myclass.objects.aggregate(a=Max('myclass_num')).get('a')
+	if sp_pnum>mc_pnum:maxnum=1
+	else:maxnum=0
+	#------------one3\
 	teach_num=models.Maketeachsm.objects.latest('id').id
 	mc_maxid=mc_maxid*2
-	if teach_num>mc_maxid:
-		tnum=1
-	else:
-		tnum=0
+	if teach_num>mc_maxid:tnum=1
+	else:tnum=0
 	#------------one4
-	mgtp_list = models.Makegradetp.objects.values('depart','grade','profess').distinct()
+	a=models.Makegradetp.objects
+	mgtp_list = a.values('depart','grade','profess').distinct()
 	gtplay=1
 	for mgtp in mgtp_list:
-		getlist=models.Makegradetp.objects.filter(
+		getlist=a.filter(
 			depart=mgtp['depart'],
 			grade=mgtp['grade'],
 			profess=mgtp['profess']
@@ -372,8 +322,7 @@ def test_rule(request):
 		if jt_num>30 or jt_num<26:
 			gtplay=0
 			break
-	if mgtp_list.exists()==False:
-		gtplay=0
+	if mgtp_list.exists()==False:gtplay=0
 	#------------	
 	return render(request,'setrule/test_rules.html',{
 		'maxid':maxid,
@@ -385,34 +334,37 @@ def test_rule(request):
 #--------------------------------------------------------------------
 @Check_Login
 def eva_report(request):
-	from django.db.models import Sum
-	cc=models.Makegradetp.objects.all()
-
-	a=cc.aggregate(a=Sum('theory_classes')).get('a')
-	aa=cc.filter(subject_name='自习').aggregate(a=Sum('theory_classes')).get('a')
-
-	n=cc.aggregate(a=Sum('practice_classes')).get('a')
-	t_nn=cc.filter(profess='电子电工')
-	nn=t_nn.aggregate(a=Sum('practice_classes')).get('a')
-	nnn=t_nn.filter(subject_name='计算机基础').aggregate(a=Sum('practice_classes')).get('a')
-
-	r={}
-	r['ts']=a-aa
-	r['ps']=n-nn+nnn	
-	r['p']=nn-nnn
-	r['total']=r['ts']+r['ps']+r['p']
-
-	return render(request,'setrule/eva_report.html',{'ran':r})
+	a=models.Makebaseclass.objects.all()
+	b=models.Makegradetp.objects
+	t=0;tt=0;ttt=0;ty=0;music=0
+	for c in a:
+		e=b.filter(depart=c.basedepart_name,grade=c.basegrade_name,profess=c.baseprofess_name)
+		for f in e:
+			t+=f.theory_classes
+			if f.subject_name=='体育':
+				ty+=f.theory_classes
+			if f.subject_name=='音乐':
+				music+=f.theory_classes
+			if f.profess!='电子电工':
+				tt+=f.practice_classes
+			else:
+				if f.subject_name=='计算机基础':
+					tt+=f.practice_classes
+				else:
+					ttt+=f.practice_classes
+	to=t+tt+ttt
+	return render(request,'setrule/eva_report.html',{'t':t,'ty':ty,'music':music,'tt':tt,'ttt':ttt,'to':to})
 
 #--------------------------------------------------------------------
 @Check_Login
 def update(request):
 	if request.method == 'POST':
-		sn=int(request.POST.get('note4',''))
-		pl=request.POST.get('note3','')
-		tn=request.POST.get('note5','')
-		pf=request.POST.get('note6','')		
-		myid=request.POST.get('id','')
+		a=request.POST
+		sn=int(a.get('note4',''))
+		pl=a.get('note3','')
+		tn=a.get('note5','')
+		pf=a.get('note6','')		
+		myid=a.get('id','')
 		models.Makebaseclass.objects.filter(id=myid).update(
 			baseclass_stunum=sn,
 			schoolplace_class=pl,
