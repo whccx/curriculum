@@ -7,7 +7,7 @@ from django.db.models import Max,Sum
 import json
 
 from users.views import Check_Login
-#--------------------------------------------------------------------
+#--------开始聚合功能模块------------------------------------------------------------
 @Check_Login
 def sindex(request):		
 	sl = models.Makebaseclass.objects.all()
@@ -28,13 +28,13 @@ def sindex(request):
 			"note6" : md.msubject,
 		}		
 		Dics.append(dic_ccx)
-	#------------------
+	#------------------学校场所号码
 	sp=mm.Schoolplace.objects.all()
 	mylist=stradd(sp,'schoolplace_num')
-	#------------------
+	#------------------专业课程名称
 	ep = mm.Profess_subjects.objects.all()
 	ep_dic=stradd(ep,'ms_name')
-	#------------------	
+	#------------------	全职教师的名字
 	fl=models.Maketeachsm.objects.filter(teacher_type='全职')
 	ft_list=stradd(fl,'teacher_name')
 	#------------------
@@ -53,9 +53,10 @@ def stradd(ep,f): # 参数f是参数ep里面的key,表里的字段名
 		if i==len(ep):mstr=mstr+e+str(":")+e
 		else:mstr=mstr+e+str(":")+e+str(";")
 		i+=1
-	return mstr
+	return mstr #组合字符串函数
 
 def create_mbc():
+	#创建基础信息合成表的内容
 	ss = mm.Myclass.objects.all()	
 	for sl in ss:
 		pflist=mm.Professional.objects.get(pf_name=sl.m_pf_name)
@@ -76,9 +77,10 @@ def create_mbc():
 	
 #--------------------------------------------------------------------
 @Check_Login
-def m_tsm(request):	
-	#---------
+def m_tsm(request):
+	# --------教师信息表合成
 	a=models.Maketeachsm.objects
+	# ---------添加兼职教师
 	tp = mm.Parttimeteacher.objects.all()
 	for t in tp:
 		n=a.filter(teacher_name=t.pt_name)
@@ -87,14 +89,14 @@ def m_tsm(request):
 			if i.exists()==False:i=1
 			else:i=int(a.latest('id').id)+1
 			a.create(teacher_name=t.pt_name,id=i,teacher_type='兼职')
-	#---------
+	#---------添加全职教师
 	tb = mm.Fulltimeteacher.objects.all()
 	for t in tb:
 		n=a.filter(teacher_name=t.ft_name)
 		if n.exists()==False:
 			i=int(a.latest('id').id)+1
 			a.create(teacher_name=t.ft_name,id=i,teacher_type='全职')
-	#---------
+	#---------添加代课教师
 	ts = mm.Substituteteacher.objects.all()
 	for s in ts:
 		n=a.filter(teacher_name=s.st_name)
@@ -102,7 +104,7 @@ def m_tsm(request):
 			i=int(a.latest('id').id)+1
 			a.create(teacher_name=s.st_name,id=i,teacher_type='代课')
 	#-------------------------------------
-	#teach subject and time
+	#教师的科目和时间设置
 	pb={}
 	sp = mm.Public_subjects.objects.all()
 	for d in sp:pb[d.id] = d.ps_name
@@ -112,6 +114,7 @@ def m_tsm(request):
 	for d in ss:pf[d.id] = d.ms_name
 
 	if request.method == 'POST':
+		#更新教师信息表
 		b=request.POST
 		my_teacher_name=b.get('my_teacher_name','')
 		maxme = b.get('spinner1','')
@@ -168,6 +171,7 @@ def m_tsm(request):
 #--------------------------------------------------------------------	
 @Check_Login
 def m_gtp(request):
+	#年级授课计划
 	a=models.Makegradetp.objects
 	select_depart="";select_profess="";select_grade=""
 	sml = models.Makebaseclass.objects.all()
@@ -197,6 +201,7 @@ def m_gtp(request):
 		mpc=int(b.get('practice_classes','0'))
 		mpo=int(b.get('prior_order','0'))
 		my_cha=b.get('oper','')
+		#编辑修改记录
 		if my_cha=="edit":
 			est=b.get('subject_type','')
 			a.filter(id=myid).update(
@@ -206,7 +211,9 @@ def m_gtp(request):
 				prior_order=mpo,
 				subject_type=est,
 				)
+		#删除一个记录
 		if my_cha=="del":a.filter(id=myid).delete()
+		#添加一个记录
 		if my_cha=="add":
 			add_grade=b.get('grade','')
 			add_profess=b.get('profess','')
@@ -231,6 +238,7 @@ def m_gtp(request):
 				depart=add_depart,
 				subject_type=ast,
 				)
+		#搜索结果展示
 		if my_cha=="my_search":
 			select_depart=b.get('select1','0')
 			select_profess=b.get('select2','0')
@@ -258,7 +266,7 @@ def m_gtp(request):
 		tp+=d.practice_classes
 	ta=tt+tp
 
-	#------------
+	#------------合成字典提交给表格框架jqGrid
 
 	Dics={
 		"page":"1",
@@ -267,10 +275,10 @@ def m_gtp(request):
 		"rows":myrows,
 		"userdata":{"theory_classes":"总节数:","practice_classes":str(ta)+"节"}
 		}
-
+	#生成json文件,备份
 	with open("static/json/make_gtp.json","w") as f:
 		json.dump(Dics,f)
-
+	#提交结果给前端
 	#----------------------------------------------------
 	return render(request,'setrule/m_gtp.html',{
 			'all_grade':all_grade,
@@ -286,27 +294,29 @@ def m_gtp(request):
 #--------------------------------------------------------------------
 @Check_Login
 def ins_rule(request):
+	#只显示规则页面
 	return render(request,'setrule/ins_rule.html')
 
 #--------------------------------------------------------------------
 @Check_Login
 def test_rule(request):
-	#------------one1
+	#测试基本规则
+	#------------第一步
 	sp_maxid=mm.Schoolplace.objects.latest('id').id
 	mc_maxid=mm.Myclass.objects.latest('id').id
 	if mc_maxid<=sp_maxid:maxid=1
 	else:maxid=0
-	#------------one2
+	#------------第二步
 	sp_pnum=mm.Schoolplace.objects.aggregate(a=Max('max_seats')).get('a')
 	mc_pnum=mm.Myclass.objects.aggregate(a=Max('myclass_num')).get('a')
 	if sp_pnum>mc_pnum:maxnum=1
 	else:maxnum=0
-	#------------one3\
+	#------------第三步
 	teach_num=models.Maketeachsm.objects.latest('id').id
 	mc_maxid=mc_maxid*2
 	if teach_num>mc_maxid:tnum=1
 	else:tnum=0
-	#------------one4
+	#------------第四步
 	a=models.Makegradetp.objects
 	mgtp_list = a.values('depart','grade','profess').distinct()
 	gtplay=1
@@ -323,7 +333,7 @@ def test_rule(request):
 			gtplay=0
 			break
 	if mgtp_list.exists()==False:gtplay=0
-	#------------	
+	#------------返回测试结果
 	return render(request,'setrule/test_rules.html',{
 		'maxid':maxid,
 		'maxnum':maxnum,
@@ -334,30 +344,38 @@ def test_rule(request):
 #--------------------------------------------------------------------
 @Check_Login
 def eva_report(request):
-	a=models.Makebaseclass.objects.all()
-	b=models.Makegradetp.objects
+	#综合评估模块
+	a=models.Makebaseclass.objects.all() #基础信息表
+	b=models.Makegradetp.objects #年级授课计划表
 	t=0;tt=0;ttt=0;ty=0;music=0
 	for c in a:
 		e=b.filter(depart=c.basedepart_name,grade=c.basegrade_name,profess=c.baseprofess_name)
 		for f in e:
+			# 理论课节数
 			t+=f.theory_classes
+			# 体育课节数
 			if f.subject_name=='体育':
 				ty+=f.theory_classes
+			# 音乐课节数
 			if f.subject_name=='音乐':
 				music+=f.theory_classes
+			# 电子电工实训课节数，区分上机操作课是为了统计机房上机节数
 			if f.profess!='电子电工':
 				tt+=f.practice_classes
 			else:
+				#电工班除了计算机基础，其他课都不在机房上机
 				if f.subject_name=='计算机基础':
 					tt+=f.practice_classes
 				else:
 					ttt+=f.practice_classes
+	#统计总节数
 	to=t+tt+ttt
 	return render(request,'setrule/eva_report.html',{'t':t,'ty':ty,'music':music,'tt':tt,'ttt':ttt,'to':to})
 
 #--------------------------------------------------------------------
 @Check_Login
 def update(request):
+	#基础信息表更新函数
 	if request.method == 'POST':
 		a=request.POST
 		sn=int(a.get('note4',''))
