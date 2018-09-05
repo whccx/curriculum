@@ -5,7 +5,7 @@
 ###### Contact: whccx@qq.com    
 ###### blog: https://www.cnblogs.com/whccx    
 ---
-   A highly customized private school curriculum schedule website does not have universality, just to learn Django.
+   A highly customized private school curriculum schedule,This website does not have universality, Just to learn Django.
    The running environment of the website is as follows:
 ---
 ```python
