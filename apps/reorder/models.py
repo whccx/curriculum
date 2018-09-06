@@ -7,7 +7,7 @@ from django.db import models
 class Subjectall(models.Model):
 	classnum = models.IntegerField(default=0)
 	week = models.IntegerField(default=0)
-	one = models.IntegerField(default=0)
-	two = models.IntegerField(default=0)
-	three = models.IntegerField(default=0)
+	one = models.CharField(max_length=30,blank='true')
+	two = models.CharField(max_length=30,blank='true')
+	three = models.CharField(max_length=30,blank='true')
 		
