@@ -25,7 +25,7 @@ SECRET_KEY = '@+$zmoxur-7-(#@2h!%8u*$40)!7dhcll6s+m#3iw-bblvgup3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.108']
+ALLOWED_HOSTS = ['192.168.0.103']
 
 
 # Application definition

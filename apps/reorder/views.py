@@ -56,10 +56,6 @@ def add_data():
 			basedic.append(i*100+ii*10+3)
 	return(basedic)
 #==========================================================
-# from django.db.models import Q
-# models.Subjectall.objects.filter(Q(classnum=2)&Q(week=4)).update(two=242)
-# meget = models.Subjectall.objects.get(classnum=2,week=4).two
-# print(meget)
 def pt_rule(classnum_list):
 	okgood=0
 	while okgood==0:
