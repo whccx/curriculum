@@ -121,7 +121,7 @@ def pt_rule(classnum_list):
 	return(teacher_dic)
 	
 
-#==========================================================
+#==================go========================================
 def mtms(me,ran,subject,stype):
 	err=True
 	dd=sr.Makebaseclass.objects.get(id=ran)	
